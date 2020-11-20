@@ -1,124 +1,125 @@
-# Azure Cosmos DB : Pilotez les RU avec Azure Automation
+# Azure Cosmos DB: Manage RU with Azure Automation
 
-Dans le scénario suivant, nous avons besoin d'ingérer et traiter une grande quantité d'information durant une période précise de la journée.
-Etant donné que ce traitement se fait de manière récurrence et prédictible, il est donc aisé de planifier le changement de RU avec un service comme Azure automation.
+In the following scenario, we need to ingest and process a large amount of information during a specific period of the day.
+Since this treatment is done in a recurrence and predictable way, it is easy to plan the change of RU with a service like Azure automation.
 
-Nous allons voir en détail comment mettre en place une solution avec Azure Automation pour effectuer ces changements de RU en fonction de nos besoins
+We'll see in detail how to implement a solution with Azure Automation to make these RU changes based on our needs
 
-## Prérequis
+## Prerequisite
 
-- [Un abonnement Azure](https://azure.microsoft.com/fr-fr/free/)
+- [Azure Free trial](https://azure.microsoft.com/en-us/free/)
 
 
-# Création des services Azure
-## Création d'un groupe de ressources
-Nous allons commencer par créer un groupe de ressources afin d'héberger les différents services de notre solution.
+# Creating Azure services
+## Creating a resource group
+We will start by creating a group of resources to host the different services of our solution.
 
-Depuis le portail [Azure](https://portal.azure.com), cliquez sur "**Create a resource**"
+From [Azure portal](https://portal.azure.com), click "**Create a resource**"
 
 ![sparkle](Pictures/001.png)
 
- Puis, recherchez "**Resource group**"
+Then "**Resource group**"
 
  ![sparkle](Pictures/002.png)
 
 
-Cliquez sur le bouton "**Create**"
+Click "**Create**"
 
 ![sparkle](Pictures/003.png)
 
-Donnez un nom au groupe de ressources puis cliquez sur le bouton "**Review + create**"
+Name the resource group and click the button  "**Review + create**"
 
 ![sparkle](Pictures/004.png)
 
-Puis validez la création en cliquant sur le bouton "**Create**"
+Then validate the creation by clicking the button "**Create**"
 
 ![sparkle](Pictures/005.png)
 
-## Creation du compte Azure Cosmos DB
+## Azure Cosmos DB account creation
 
-Depuis le portail [Azure](https://portal.azure.com), cliquez sur "**Create a resource**"
+From [Azure portal](https://portal.azure.com), click "**Create a resource**"
 
 ![sparkle](Pictures/006.png)
 
-Recherchez le service Azure Cosmos DB
+Search for Azure Cosmos DB
 
 ![sparkle](Pictures/007.png)
 
-Puis cliquez sur le bouton "**Create**"
+Then click "**Create**"
 
 ![sparkle](Pictures/008.png)
 
-Sélectionnez le groupe de ressources créé précédemment, définissez les options dont vous avez besoin puis cliquez sur le bouton "**Review + create**"
+Select the previously created resource group, set the options you need, then click the button "**Review + create**"
 
 ![sparkle](Pictures/009.png)
 
-Cliquez sur le bouton "**Create**"
+Click "**Create**"
 
 ![sparkle](Pictures/010.png)
 
-Une fois le compte Azure Cosmos DB créé, cliquez sur le bouton "**Go to resource**" afin de créer une base et un conteneur.
+Once the Azure Cosmos DB account is created, click "**Go to resource**" to create database and container
 
 ![sparkle](Pictures/011.png)
 
-Cliquez sur "**Overview**" puis sur "**Add Container**"
+Click "**Overview**" then "**Add Container**"
 
 ![sparkle](Pictures/012.png)
 
-Créez une nouvelle base de données ainsi qu'un nouveau conteneur. Dans cet exemple nous allons décocher la case "**Provision database throughput**" (mais le script fonctionnera aussi avec cette case cochée).
+Create a new database and a new container. In this example we're going to uncheck the box "**Provision database throughput**" (but the script will also work with this checked box).
 
-Cliquez sur le bouton "**Ok**"
+Click "**Ok**"
 
 ![sparkle](Pictures/013.png)
 
-Une fois la base et le conteneur créés, ils devront être visibles depuis la vue d'ensemble de votre compte Azure Cosmos DB 
+Once the base and container are created, they will be visible from your Azure Cosmos DB account overview 
 
 ![sparkle](Pictures/014.png)
 
-## Création du Service Azure Automation
+## Azure Automation service creation
 
-Depuis le portail [Azure](https://portal.azure.com), cliquez sur "**Create a resource**"
+From [Azure portal ](https://portal.azure.com), click "**Create a resource**"
 
 ![sparkle](Pictures/015.png)
 
 
-Puis recherchez "**Automation**"
+Then search for "**Automation**"
 
 ![sparkle](Pictures/016.png)
 
-Cliquez sur le bouton "**Create**
+Click "**Create**
 
 ![sparkle](Pictures/017.png)
 
-Donnez un nom à votre compte "*Automation*", choisissez le groupe de ressources créé précédemment et sélectionnez "**Yes**" pour "**Create Azure Run As account**"
+Name your Automation account, choose the resource group created previously and select "**Yes**" for "**Create Azure Run As account**"
 
-Cliquez sur le bouton "**Create**"
+Click "**Create**"
 
 ![sparkle](Pictures/018.png)
 
-Après la création du compte "*Azure Automation*", vous devriez donc avoir les ressources suivantes dans votre groupe de ressources
+After creating the Azure Automation account, you should have the following resources in your resource group
 
 ![sparkle](Pictures/019.png)
 
-## Paramétrage du compte Azure Automation
+## Azure Automation account setting up
 
-Cliquez sur votre compte **Azure Automation**
+Click on your **Azure Automation** account
 
 ![sparkle](Pictures/020.png)
 
-Cliquez sur "**Runbooks**" puis sur "**Create a runbook**"
+Click on "**Runbooks**" then on "**Create a runbook**"
 
 ![sparkle](Pictures/021.png)
 
-Donnez un nom à votre *runbook*.
-Choisissez "**PowerShell**" dans la liste déroulante "**Runbook type**"
+Name your runbook.
 
-Cliquez sur le bouton "**Create**"
+Select "**PowerShell**" in "**Runbook type**" drop-down list
+
+Click "**Create**"
 
 ![sparkle](Pictures/022.png)
 
 
-Copiez le script PowerShell ci-dessous. Ce script est aussi disponible sur le [repo GitHub de Hugo Girard](https://github.com/hugogirard/azureScripts/tree/master/runbook/scaleUnitCosmosDB), qui a grandement contribué à l'écriture du script. Merci Hugo :) ! 
+Copy the PowerShell script below. This script is also available on [Hugo Girard's Github repo](https://github.com/hugogirard/azureScripts/tree/master/runbook/scaleUnitCosmosDB), who helped a lot by writting the script. Thank you Hugo :)! 
 
 ```javascript
 
@@ -194,90 +195,90 @@ catch {
  ```
 
 
-Puis cliquez sur le bouton "**Save**"
+Click "**Save**"
 
 ![sparkle](Pictures/023.png)
 
-A ce stade-ci de l'article, le script ne fonctionnera pas encore. Il est nécessaire de rajouter deux modules pour le faire fonctionner.
+At this point in the article, the script will not work yet. It is necessary to add two modules to make it work.
 
-Cliquez sur la croix en haut à droite pour fermer la fenêtre d'édition
+Click on the cross at the top right to close the editing window
 
 ![sparkle](Pictures/024.png)
 
-Puis faîte de même pour fermer le runbook
+Then do the same to close the runbook
 
 ![sparkle](Pictures/025.png)
 
-Sur la gauche, cliquez sur "**Module**", puis sur "**Browse gallery**"
+On the left, click  "**Module**", then on "**Browse gallery**"
 
 ![sparkle](Pictures/026.png)
 
-Rajoutez les 2 modules suivants :
+Add the following two modules: 
 
 - Az.Accounts
 - Az.CosmosDB
 
-Ci-dessous une illustration pour le module Az.Accounts
+Below is an illustration for the Az.Accounts module
 
-Recherchez le module Az.Accounts
+Search Az.Accounts module
 
 ![sparkle](Pictures/027.png)
 
-Puis cliquez sur "**Import**" puis dans la fenêtre suivante sur "**Ok**"
+Then click "**Import**" then in the next window on "**Ok**"
 
 ![sparkle](Pictures/028.png)
 
-Recommencez l'opération pour le module Az.CosmosDB
+Repeat the operation for the Az.CosmosDB module
 
-Vérifiez que les modules soient bien présents et que l'importation est bien terminée
+Make sure the modules are present and that the import is complete
 
 
 ![sparkle](Pictures/029.png)
 
-Revenez dans votre runbook
+Get back in your runbook
 
 ![sparkle](Pictures/030.png)
 
-Cliquez sur le bouton "**Edit**"
+Click "**Edit**"
 
 ![sparkle](Pictures/031.png)
 
-Cliquez sur "**Test pane**"
+Click "**Test pane**"
 
 ![sparkle](Pictures/032.png)
 
-1. Remplissez les champs sur la gauche avec les informations demandées concernant Azure Cosmos DB (ici nous pilotons les RU au niveau du conteneur, donc j'ai laissé le champ *databasethroughput* vide, sinon, pour agir au niveau de la base de données, il suffit d'entrer la valeur : 1). J'ai défini le nouveau niveau de RU à 500 (au lieu de 400).
+1. Fill the fields on the left with the requested information regarding Azure Cosmos DB (here we set the RUs at the container level, so I left the field 'databasethroughput' empty, otherwise, to act at the database level, just enter the value: 1). I set the new RU level to 500 (instead of 400)..
 
-2. Cliquez sur "**Start**"
+2. Click "**Start**"
 
 ![sparkle](Pictures/033.png)
 
-Si tout se passe correctement, vous devez obtenir le message suivant
+If everything goes right, you need to get the following message
 
 ![sparkle](Pictures/034.png)
 
-Mais surtout, votre conteneur à maintenant 500 RU
+But most importantly, your container now runs at 500 RU
 
 
 ![sparkle](Pictures/035.png)
 
-## Programmer une exécution récurrente
+## Schedule a recurring execution
 
-Maintenant que le plus dur est fait, il ne nous reste plus qu'à planifier l'exécution de notre script
+Now that the hardest part is done, all we have to do is plan the execution of our script
 
-Depuis la fenêtre d'édition du runbook, cliquez sur "**Publish**" puis sur "**Yes**"
+From the runbook's editing window, click "**Publish**" and then "**Yes**"
 
 ![sparkle](Pictures/036.png)
 
-Dans votre runbook, cliquez sur "**Schedules**"
+In your runbook, click "**Schedules**"
 
 ![sparkle](Pictures/037.png)
 
-Cliquez sur "**Add a schedule**"
+Click "**Add a schedule**"
 
 ![sparkle](Pictures/038.png)
 
-Cliquez sur "**Schedule**" 
+Click "**Schedule**" 
 
 ![sparkle](Pictures/039.png)
 
@@ -285,35 +286,36 @@ Puis "**Create a new schedule**"
 
 ![sparkle](Pictures/040.png)
 
-Entrez les paramètres de votre planification puis cliquez sur "**Create**"
+Enter your planning parameters and then Click "**Create**"
 
 ![sparkle](Pictures/041.png)
 
 
-Ensuite cliquez sur "**Configure parameters and run settings**"
+ Click "**Configure parameters and run settings**"
 
 
 ![sparkle](Pictures/042.png)
 
 
-Entrez les informations concernant votre conteneur Azure Cosmos DB puis cliquez sur "**Ok**
+Enter information about your Azure Cosmos DB container and then Click "**Ok**
 
 ![sparkle](Pictures/043.png)
 
-Validez la création de votre planification en cliquant sur "**Ok**"
+Validate your schedule by clicking on "**Ok**"
 
 ![sparkle](Pictures/044.png)
 
-Vous avez donc une planification programmée.
+Your schedule is now ready.
 
 ![sparkle](Pictures/045.png)
 
-Il est possible de créer plusieurs autres planifications, pour par exemple revoir les RU à la baisse si besoin
+It is possible to create several other schedules, for example to decrease RU if necessary
+
 
 ![sparkle](Pictures/046.png)
 
 ## Monitoring
 
-Cliquez sur "**Jobs**" si vous souhaitez avoir un statut de vos planifications
+Click "**Jobs**" if you want to have a status of your schedules
 
 ![sparkle](Pictures/047.png)
